@@ -1,8 +1,8 @@
 import os  # accessing the os functions
 import check_camera
-import Capture_Image
-import Train_Image
-import Recognize
+import capture_image
+import train_image
+import recognize
 
 
 # creating the title bar function
@@ -19,7 +19,7 @@ def title_bar():
 
 # creating the user main menu function
 
-def mainMenu():
+def main_menu():
     title_bar()
     print()
     print(10 * "*", "WELCOME MENU", 10 * "*")
@@ -35,27 +35,26 @@ def mainMenu():
             choice = int(input("Enter Choice: "))
 
             if choice == 1:
-                checkCamera()
+                check_cam()
                 break
             elif choice == 2:
-                CaptureFaces()
+                capture_faces()
                 break
             elif choice == 3:
-                Trainimages()
+                train_images()
                 break
             elif choice == 4:
-                RecognizeFaces()
+                recognize_faces()
                 break
             elif choice == 5:
                 os.system("py automail.py")
                 break
-                mainMenu()
             elif choice == 6:
                 print("Thank You")
                 break
             else:
                 print("Invalid Choice. Enter 1-4")
-                mainMenu()
+                main_menu()
         except ValueError:
             print("Invalid Choice. Enter 1-4\n Try Again")
     exit
@@ -64,38 +63,38 @@ def mainMenu():
 # ---------------------------------------------------------
 # calling the camera test function from check camera.py file
 
-def checkCamera():
-    check_camera.camer()
+def check_cam():
+    check_camera.camera()
     key = input("Enter any key to return main menu")
-    mainMenu()
+    main_menu()
 
 
 # --------------------------------------------------------------
 # calling the take image function form capture image.py file
 
-def CaptureFaces():
-    Capture_Image.takeImages()
+def capture_faces():
+    capture_image.take_images()
     key = input("Enter any key to return main menu")
-    mainMenu()
+    main_menu()
 
 
 # -----------------------------------------------------------------
 # calling the train images from train_images.py file
 
-def Trainimages():
-    Train_Image.TrainImages()
+def train_images():
+    train_image.train_images()
     key = input("Enter any key to return main menu")
-    mainMenu()
+    main_menu()
 
 
 # --------------------------------------------------------------------
 # calling the recognize_attendance from recognize.py file
 
-def RecognizeFaces():
-    Recognize.recognize_attendence()
+def recognize_faces():
+    recognize.recognize_attendence()
     key = input("Enter any key to return main menu")
-    mainMenu()
+    main_menu()
 
 
 # ---------------main driver ------------------
-mainMenu()
+main_menu()

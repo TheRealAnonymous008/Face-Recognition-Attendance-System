@@ -9,7 +9,7 @@ import pandas as pd
 #-------------------------
 def recognize_attendence():
     recognizer = cv2.face.LBPHFaceRecognizer_create()  # cv2.createLBPHFaceRecognizer()
-    recognizer.read("./TrainingImageLabel/Trainner.yml")
+    recognizer.read("./TrainingImageLabel/trainer.yml")
     harcascadePath = "haarcascade_frontalface_default.xml"
     faceCascade = cv2.CascadeClassifier(harcascadePath)
     df = pd.read_csv("StudentDetails"+os.sep+"StudentDetails.csv")
@@ -38,8 +38,7 @@ def recognize_attendence():
                 aa = df.loc[df['Id'] == Id]['Name'].values
                 confstr = "  {0}%".format(round(100 - conf))
                 tt = str(Id)+"-"+aa
-
-
+                
             else:
                 Id = '  Unknown  '
                 tt = str(Id)

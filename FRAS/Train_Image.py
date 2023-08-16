@@ -9,7 +9,7 @@ from threading import Thread
 
 # -------------- image labesl ------------------------
 
-def getImagesAndLabels(path):
+def get_images_and_labels(path):
     # get the path of all the files in the folder
     imagePaths = [os.path.join(path, f) for f in os.listdir(path)]
     # print(imagePaths)
@@ -33,15 +33,15 @@ def getImagesAndLabels(path):
 
 
 # ----------- train images function ---------------
-def TrainImages():
+def train_images():
     recognizer = cv2.face_LBPHFaceRecognizer.create()
     harcascadePath = "haarcascade_frontalface_default.xml"
     detector = cv2.CascadeClassifier(harcascadePath)
-    faces, Id = getImagesAndLabels("TrainingImage")
+    faces, Id = get_images_and_labels("TrainingImage")
     Thread(target = recognizer.train(faces, np.array(Id))).start()
     # Below line is optional for a visual counter effect
     Thread(target = counter_img("TrainingImage")).start()
-    recognizer.save("TrainingImageLabel"+os.sep+"Trainner.yml")
+    recognizer.save("TrainingImageLabel"+os.sep+"trainer.yml")
     print("All Images")
 
 # Optional, adds a counter for images trained (You can remove it)

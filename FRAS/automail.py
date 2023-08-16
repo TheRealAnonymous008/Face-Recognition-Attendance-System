@@ -11,7 +11,7 @@ sub = "Attendance Report for " + str(date)
 # mail information
 yag = yagmail.SMTP("youremail@email.com", "password")
 
-# sent the mail
+# send the mail
 yag.send(
     to=receiver,
     subject=sub, # email subject
