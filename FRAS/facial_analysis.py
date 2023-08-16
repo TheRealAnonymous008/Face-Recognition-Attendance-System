@@ -74,13 +74,13 @@ def run_analysis():
             text = str(gender) + str(age)
 
             cv2.rectangle(im, (x, y), (x+w, y+h), (10, 159, 255), 2)
-            cv2.putText(im, str(text), (x+5,y-5), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+            cv2.putText(im, str(text), (x+5,y-5), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 3, cv2.LINE_AA)
 
             if emotion.lower() in ["angry", "disgust", "fear", "sad"]:
                 emotion_color = (0, 0, 255)
             else:
                 emotion_color = (0, 255, 0)
-            cv2.putText(im, str(emotion), (x + 5, y + h - 5), cv2.FONT_HERSHEY_SIMPLEX,1, emotion_color ,1 )
+            cv2.putText(im, str(emotion), (x + 5, y + h - 5), cv2.FONT_HERSHEY_SIMPLEX,1, emotion_color ,2, cv2.LINE_AA)
 
         cv2.imshow('Facial Analysis', im)
 
