@@ -5,9 +5,13 @@ import time
 import cv2
 import pandas as pd
 
+# In case cv2.face.LBPHFaceRecognizer_create is not recognized refer to this.
+# https://stackoverflow.com/questions/45655699/attributeerror-module-cv2-face-has-no-attribute-createlbphfacerecognizer
+
 
 #-------------------------
 def recognize_attendence():
+
     recognizer = cv2.face.LBPHFaceRecognizer_create()  # cv2.createLBPHFaceRecognizer()
     recognizer.read("./TrainingImageLabel/trainer.yml")
     harcascadePath = "haarcascade_frontalface_default.xml"
