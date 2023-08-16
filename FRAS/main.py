@@ -2,6 +2,7 @@ import os  # accessing the os functions
 import check_camera
 import capture_image
 import train_image
+import facial_analysis
 import recognize
 
 
@@ -28,35 +29,39 @@ def main_menu():
     print("[3] Train Images")
     print("[4] Recognize & Attendance")
     print("[5] Auto Mail")
-    print("[6] Quit")
+    print("[6] Facial Analysis")
+    print("[X] Quit")
 
     while True:
         try:
-            choice = int(input("Enter Choice: "))
-
-            if choice == 1:
+            choice = str(input("Enter Choice: "))
+            
+            if choice == "1":
                 check_cam()
                 break
-            elif choice == 2:
+            elif choice == "2":
                 capture_faces()
                 break
-            elif choice == 3:
+            elif choice == "3":
                 train_images()
                 break
-            elif choice == 4:
+            elif choice == "4":
                 recognize_faces()
                 break
-            elif choice == 5:
+            elif choice == "5":
                 os.system("py automail.py")
                 break
-            elif choice == 6:
+            elif choice == "6":
+                facial_analysis_driver()
+                break
+            elif choice == "X":
                 print("Thank You")
                 break
             else:
-                print("Invalid Choice. Enter 1-4")
+                print("Invalid Choice.")
                 main_menu()
         except ValueError:
-            print("Invalid Choice. Enter 1-4\n Try Again")
+            print("Invalid Choice. Try Again")
     exit
 
 
@@ -95,6 +100,13 @@ def recognize_faces():
     key = input("Enter any key to return main menu")
     main_menu()
 
+# --------------------------------------------------------------------
+# calling analysis for facial analysis (age, gender, and sentiment) from facial_analysis.py
+
+def facial_analysis_driver():
+    facial_analysis.run_analysis()
+    key = input("Enter any key to return to main menu")
+    main_menu()
 
 # ---------------main driver ------------------
 main_menu()
