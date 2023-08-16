@@ -2,6 +2,7 @@ import cv2
 import pandas as pd
 import numpy as np
 import logging as log
+from deepface import DeepFace
 
 age_list = [
     "(0-2)",
@@ -26,71 +27,6 @@ def default_predictors():
         "models/gender_deploy.prototxt", "models/gender_net.caffemodel"
     )
     return age_net, gender_net
-
-
-class AgeGenderPredictor:
-    def __init__(self, age_model, gender_model) -> None:
-        self.age_model = age_model
-        self.gender_model = gender_model
-        self.is_tracking = False
-        self.face_names = {}
-        self.backlog = {}
-        self.current_id = -1
-
-    def predict(self, fid: int, face_img: np.ndarray):
-        if self.is_tracking:
-            if fid not in self.backlog:
-                self.backlog[fid] = face_img
-            return
-
-        if fid in self.backlog:
-            del self.backlog[fid]
-
-        # do not reprocess faces
-        # TODO might have some use to reprocess the same image after some time
-        if fid in self.face_names and self.face_names[fid] != "":
-            return
-
-        self.is_tracking = True
-
-        log.debug(f"Doing predictions: {fid}")
-        blob = cv2.dnn.blobFromImage(
-            face_img, 1, (227, 227), MODEL_MEAN_VALUES, swapRB=False
-        )
-
-        # Predict gender
-        self.gender_model.setInput(blob)
-        gender_preds = self.gender_model.forward()
-        gender = gender_list[gender_preds[0].argmax()]
-
-        # Predict age
-        self.age_model.setInput(blob)
-        age_preds = self.age_model.forward()
-        age = age_list[age_preds[0].argmax()]
-
-        self.is_tracking = False
-        self.face_names[fid] = f"P{str(fid)}\n({gender}) - {age}"
-
-        if len(self.backlog):
-            for k in self.backlog:
-                self.predict(k, self.backlog[k])
-
-    def get_label(self, fid):
-        return self.face_names[fid] #+ "\n" + self.emotions[fid][0]
-
-    def get_new_id(self) -> int:
-        self.current_id += 1
-        return (self.current_id) % 100
-
-    def last_id(self) -> int:
-        return self.current_id
-
-    def remove(self, fid):
-        del self.face_names[fid]
-        del self.emotions[fid]
-        if fid in self.backlog:
-            del self.backlog[fid]
-
 
 def run_analysis():
     print("Running facial analysis")
@@ -118,6 +54,12 @@ def run_analysis():
             # (227, 227) is derived from the proto.txt.
             blob = cv2.dnn.blobFromImage(face, 1, (227, 227), MODEL_MEAN_VALUES, swapRB=False)
 
+            # DeepFace can run emotion, age and gender analysis but its age and gender models are very big.
+            results = DeepFace.analyze(face, ("emotion"), False, silent=True)
+            # Emotion Detection
+            emotions_dict = results[0]['emotion']
+            emotion = max(emotions_dict, key = emotions_dict.get)
+
             # Predict gender
             gender_model.setInput(blob)
             gender_preds = gender_model.forward()
@@ -128,10 +70,17 @@ def run_analysis():
             age_preds = age_model.forward()
             age = age_list[age_preds[0].argmax()]
 
+
             text = str(gender) + str(age)
-            
+
             cv2.rectangle(im, (x, y), (x+w, y+h), (10, 159, 255), 2)
             cv2.putText(im, str(text), (x+5,y-5), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+
+            if emotion.lower() in ["angry", "disgust", "fear", "sad"]:
+                emotion_color = (0, 0, 255)
+            else:
+                emotion_color = (0, 255, 0)
+            cv2.putText(im, str(emotion), (x + 5, y + h - 5), cv2.FONT_HERSHEY_SIMPLEX,1, emotion_color ,1 )
 
         cv2.imshow('Facial Analysis', im)
 
