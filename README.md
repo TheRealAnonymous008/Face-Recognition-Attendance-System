@@ -1,5 +1,12 @@
 # Face Recognition Attandance System
 
+### Facial Analysis Models Used
+https://github.com/serengil/deepface - for the emotion analysis (also has age / gender analysis but these are 500 MB each).
+
+https://github.com/smahesh29/Gender-and-Age-Detection/tree/master - age and gender detection (running requires both the caffe and prototxt files).
+
+https://github.com/Raschka-research-group/coral-cnn/tree/master/model-code - alternative to the age detection algorithm.
+
 ### Recognize The faces And Take Automatic Attandance. :sparkles:
 
 ![Face Recognition Logo](https://github.com/kmhmubin/Face-Recognition-Attendance-System/blob/master/Document%20Metarial/Project%20demo%20images/Face-Recognition-Attendance-System-Logo.jpg)
