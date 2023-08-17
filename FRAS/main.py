@@ -33,35 +33,32 @@ def main_menu():
     print("[X] Quit")
 
     while True:
-        try:
-            choice = str(input("Enter Choice: "))
-            
-            if choice == "1":
-                check_cam()
-                break
-            elif choice == "2":
-                capture_faces()
-                break
-            elif choice == "3":
-                train_images()
-                break
-            elif choice == "4":
-                recognize_faces()
-                break
-            elif choice == "5":
-                os.system("py automail.py")
-                break
-            elif choice == "6":
-                facial_analysis_driver()
-                break
-            elif choice == "X":
-                print("Thank You")
-                break
-            else:
-                print("Invalid Choice.")
-                main_menu()
-        except ValueError:
-            print("Invalid Choice. Try Again")
+        choice = str(input("Enter Choice: "))
+        
+        if choice == "1":
+            check_cam()
+            break
+        elif choice == "2":
+            capture_faces()
+            break
+        elif choice == "3":
+            train_images()
+            break
+        elif choice == "4":
+            recognize_faces()
+            break
+        elif choice == "5":
+            os.system("py automail.py")
+            break
+        elif choice == "6":
+            facial_analysis_driver()
+            break
+        elif choice == "X":
+            print("Thank You")
+            break
+        else:
+            print("Invalid Choice.")
+            main_menu()
     exit
 
 

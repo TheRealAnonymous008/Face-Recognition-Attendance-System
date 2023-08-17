@@ -1,7 +1,6 @@
 import cv2
-import pandas as pd
-import numpy as np
-import logging as log
+import morph_ord
+import torch
 from deepface import DeepFace
 
 age_list = [
@@ -20,13 +19,15 @@ MODEL_MEAN_VALUES = (78.4263377603, 87.7689143744, 114.895847746)
 
 
 def default_predictors():
-    age_net = cv2.dnn.readNetFromCaffe(
-        "models/age_deploy.prototxt", "models/age_net.caffemodel"
-    )
     gender_net = cv2.dnn.readNetFromCaffe(
         "models/gender_deploy.prototxt", "models/gender_net.caffemodel"
     )
-    return age_net, gender_net
+
+    res_net = morph_ord.resnet34()
+    res_net.load_state_dict(torch.load("models/morph2_ordinal.pt", map_location="cpu"))
+    res_net.eval()
+
+    return res_net, gender_net
 
 def run_analysis():
     print("Running facial analysis")
@@ -56,6 +57,7 @@ def run_analysis():
 
             # DeepFace can run emotion, age and gender analysis but its age and gender models are very big.
             results = DeepFace.analyze(face, ("emotion"), False, silent=True)
+
             # Emotion Detection
             emotions_dict = results[0]['emotion']
             emotion = max(emotions_dict, key = emotions_dict.get)
@@ -66,12 +68,13 @@ def run_analysis():
             gender = gender_list[gender_preds[0].argmax()]
 
             # Predict age
-            age_model.setInput(blob)
-            age_preds = age_model.forward()
-            age = age_list[age_preds[0].argmax()]
+            resized_face = cv2.resize(face, (128, 128), interpolation= cv2.INTER_AREA)
+            face_tensor = torch.tensor([resized_face]).transpose(1, 3).float() / 255.0
+            logits, probas = age_model.forward(face_tensor)
+            age = morph_ord.process_model_outputs(logits, probas)
 
 
-            text = str(gender) + str(age)
+            text = str(gender) + ": " + str(age)
 
             cv2.rectangle(im, (x, y), (x+w, y+h), (10, 159, 255), 2)
             cv2.putText(im, str(text), (x+5,y-5), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 3, cv2.LINE_AA)
